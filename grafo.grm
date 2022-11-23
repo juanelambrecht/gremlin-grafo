@@ -1,0 +1,53 @@
+grafobares = TinkerGraph.open()
+g = grafobares.traversal()
+
+jose = g.addV("persona").property(T.id, 1).property("nombre", "jose").next()
+jorge = g.addV("persona").property(T.id, 2).property("nombre", "jorge").next()
+javier = g.addV("persona").property(T.id, 3).property("nombre", "javier").next()
+ferona = g.addV("bar").property(T.id, 4).property("nombre", "ferona").next()
+boticario = g.addV("bar").property(T.id, 5).property("nombre", "boticario").next()
+thehole = g.addV("bar").property(T.id, 6).property("nombre", "thehole").next()
+quilmes = g.addV("cerveza").property(T.id, 7).property("nombre", "quilmes").next()
+schneider = g.addV("cerveza").property(T.id, 8).property("nombre", "schneider").next()
+patagonia = g.addV("cerveza").property(T.id, 9).property("nombre", "patagonia").next()
+andes = g.addV("cerveza").property(T.id, 10).property("nombre", "andes").next()
+
+g.addE("sirve").from(boticario).to(quilmes).property(T.id, 11)
+g.addE("sirve").from(ferona).to(quilmes).property(T.id, 12)
+g.addE("sirve").from(thehole).to(patagonia).property(T.id, 13)
+g.addE("sirve").from(thehole).to(andes).property(T.id, 14)
+g.addE("sirve").from(thehole).to(schneider).property(T.id, 15)
+
+g.addE("legusta").from(jose).to(patagonia).property(T.id, 16)
+g.addE("legusta").from(jose).to(andes).property(T.id, 17)
+g.addE("legusta").from(jose).to(schneider).property(T.id, 18)
+g.addE("legusta").from(jose).to(quilmes).property(T.id, 19)
+g.addE("legusta").from(jorge).to(quilmes).property(T.id, 20)
+g.addE("legusta").from(javier).to(quilmes).property(T.id, 21)
+
+g.addE("frecuenta").from(jose).to(ferona).property(T.id, 22)
+g.addE("frecuenta").from(jose).to(boticario).property(T.id, 23)
+g.addE("frecuenta").from(jose).to(thehole).property(T.id, 24)
+g.addE("frecuenta").from(jorge).to(boticario).property(T.id, 25)
+g.addE("frecuenta").from(javier).to(ferona).property(T.id, 26)
+
+//1. Listar todas las personas
+g.V().hasLabel('persona').values()
+
+//2. Todos los bares que sirven Quilmes.
+g.V().has('cerveza', 'nombre', 'quilmes').in().hasLabel('bar').values()
+
+//3. Las cervezas que le gustan a José.
+g.V().has('nombre', 'jose').out().hasLabel('cerveza').values()
+
+//4. Los bares que sirven la cerveza que le gusta a Jorge.
+g.V().has('nombre', 'jorge').out().hasLabel('cerveza').in().hasLabel('bar').values()
+
+//5. Las personas que frecuentan bares que sirven alguna cerveza que les
+gusta.
+g.V().hasLabel('persona').out('frecuentan').out('sirven').in('legusta').values()
+
+//6. Las personas que frecuentan los bares que sirven la cerveza que le gusta
+a Javier
+
+g.V().has('nombre', 'javier').out().hasLabel('cerveza').in().hasLabel('bar').values()
