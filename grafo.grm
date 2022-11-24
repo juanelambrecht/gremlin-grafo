@@ -29,25 +29,27 @@ g.addE("frecuenta").from(jose).to(ferona).property(T.id, 22)
 g.addE("frecuenta").from(jose).to(boticario).property(T.id, 23)
 g.addE("frecuenta").from(jose).to(thehole).property(T.id, 24)
 g.addE("frecuenta").from(jorge).to(boticario).property(T.id, 25)
-g.addE("frecuenta").from(javier).to(ferona).property(T.id, 26)
+g.addE("frecuenta").from(javier).to(thehole).property(T.id, 26)
 
-//1. Listar todas las personas
+//1. Listar todas las personas -> recupero los vértices con label "persona"
 g.V().hasLabel('persona').values()
 
 //2. Todos los bares que sirven Quilmes.
 g.V().has('cerveza', 'nombre', 'quilmes').in().hasLabel('bar').values()
 
-//3. Las cervezas que le gustan a José.
+//3. Las cervezas que le gustan a José. -> recupero los vértices con propiedad
 g.V().has('nombre', 'jose').out().hasLabel('cerveza').values()
 
-//4. Los bares que sirven la cerveza que le gusta a Jorge.
+//4. Los bares que sirven la cerveza que le gusta a Jorge. -> in(llega la relación)-out(parte la relacion)
 g.V().has('nombre', 'jorge').out().hasLabel('cerveza').in().hasLabel('bar').values()
 
 //5. Las personas que frecuentan bares que sirven alguna cerveza que les
 gusta.
-g.V().hasLabel('persona').out('frecuentan').out('sirven').in('legusta').values()
+g.V().hasLabel('persona').out('frecuenta').out('sirve').in('legusta').cyclicPath().values()
 
 //6. Las personas que frecuentan los bares que sirven la cerveza que le gusta
 a Javier
 
-g.V().has('nombre', 'javier').out().hasLabel('cerveza').in().hasLabel('bar').values()
+g.V().has('nombre', 'javier').out().hasLabel('cerveza').in().hasLabel('bar').in().hasLabel('persona').values()
+//Para que no repita no ciclamos
+g.V().has('nombre', 'javier').out().hasLabel('cerveza').in().hasLabel('bar').in().hasLabel('persona').not(cyclicPath()).values()
